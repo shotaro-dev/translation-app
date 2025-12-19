@@ -4,7 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Translation App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="index.js" type="module" defer></script>
   </head>
-  <body></body>
+  <body class="min-h-screen flex flex-col items-center">
+    <header
+      class="h-1/4 bg-[url('./images/map_generated_in_grok.jpg')] bg-cover bg-center w-full flex"
+    >
+      <img
+        class="w-32 h-32 object-cover rounded-full"
+        src="./images/bird_generated_in_grok.jpg"
+        alt=""
+      />
+      <div>
+        <h1>PollyGlot</h1>
+        <p></p>
+      </div>
+    </header>
+    <main>
+      <section class="input-section flex flex-col">
+        <h2>Enter text to translate:</h2>
+        <textarea
+          id="input-text"
+          rows="6"
+          placeholder="Type your text here..."
+        ></textarea>
+        <select id="language-select">
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="ja">Japanese</option>
+          <option value="en">English</option>
+        </select>
+        <button id="translate-button">Translate</button>
+      </section>
+      <section class="output-section">
+        <h2>Translated text:</h2>
+        <div id="output-text"></div>
+      </section>
+    </main>
+  </body>
 </html>
