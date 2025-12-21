@@ -9,35 +9,58 @@
   </head>
   <body class="min-h-screen flex flex-col items-center">
     <header
-      class="h-1/4 bg-[url('./images/map_generated_in_grok.jpg')] bg-cover bg-center w-full flex"
+      class="h-1/4 bg-[url('./images/map_generated_in_grok.jpg')] bg-black/80 bg-blend-multiply bg-cover bg-center w-full flex"
     >
       <img
         class="w-32 h-32 object-cover rounded-full"
         src="./images/bird_generated_in_grok.jpg"
-        alt=""
+        alt="Bird Logo"
       />
-      <div>
-        <h1>PollyGlot</h1>
-        <p></p>
+      <div class="flex flex-col justify-center">
+        <h1 class="text-emerald-600 font-bold text-3xl">PollyGlot</h1>
+        <p class="text-white">Perfect translations Every Time</p>
       </div>
     </header>
-    <main>
-      <section class="input-section flex flex-col">
-        <h2>Enter text to translate:</h2>
-        <textarea
-          id="input-text"
-          rows="6"
-          placeholder="Type your text here..."
-        ></textarea>
-        <select id="language-select">
-          <option value="es">Spanish</option>
-          <option value="fr">French</option>
-          <option value="ja">Japanese</option>
-          <option value="en">English</option>
-        </select>
-        <button id="translate-button">Translate</button>
+    <main
+      class="border-4 border-black rounded-lg p-6 mt-6 w-11/12 flex flex-col gap-6"
+    >
+
+
+      <section class="">
+        <form id="translation-form" class="flex flex-col gap-4">
+          <label for="input-text">Text to translate 👇</label>
+          <textarea
+            id="input-text"
+            rows="6"
+            placeholder="Type your text here..."
+          ></textarea>
+          <label for="language-select">Select language 👇</label>
+          <div id="language-select" class="flex flex-col gap-2">
+            <label
+              ><input type="radio" name="language" value="en" checked /> English
+              <span class="">🇺🇸</span></label
+            >
+            <label
+              ><input type="radio" name="language" value="es" /> Spanish
+              <span class="">🇪🇸</span></label
+            >
+            <label
+              ><input type="radio" name="language" value="fr" /> French
+              <span class="">🇫🇷</span></label
+            >
+            <label
+              ><input type="radio" name="language" value="ja" /> Japanese
+              <span class="">🇯🇵</span></label
+            >
+          </div>
+          <button
+            class="bg-blue-800 text-white font-bold py-2 px-4 rounded hover:opacity-75"
+          >
+            Translate
+          </button>
+        </form>
       </section>
-      <section class="output-section">
+      <section class="">
         <h2>Translated text:</h2>
         <div id="output-text"></div>
       </section>

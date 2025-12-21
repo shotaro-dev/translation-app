@@ -1,11 +1,11 @@
 ## 要件
 - 提示されたデザインに従う
-- set up the OpenAI AIP
+<!-- - set up the OpenAI AIP
 - select a model
 - Enginner a prompt
 - Use temperature
 - use max_tokens
-- Render the completion
+- Render the completion -->
 
 ### 追加要件
 - chat app にする
