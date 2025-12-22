@@ -8,10 +8,12 @@ const generateImageBtn = document.getElementById("generate-image-btn");
 
 let checkedRadio = null;
 let chelkedLang = null;
+let isLoading = false;
 
 const chatMessageClass = "font-bold py-2 px-4 rounded-b-lg  w-11/12 ";
 const userMessageClass = "bg-green-400 text-black self-end rounded-tl-lg mr-4";
-const assistantMessageClass = "bg-blue-800 text-white self-start rounded-tr-lg ml-2";
+const assistantMessageClass =
+  "bg-blue-800 text-white self-start rounded-tr-lg ml-2";
 
 const assistantMessageEl = document.createElement("div");
 assistantMessageEl.className = chatMessageClass + assistantMessageClass;
@@ -80,23 +82,35 @@ chatForm.addEventListener("submit", async (e) => {
   }
 });
 
+
 async function generateImage(prompt) {
+  // ローディング表示
+  chatHistory.innerHTML =
+    '<div class="w-full flex justify-center items-center py-8"><span class="animate-pulse text-gray-500">Loading image...</span></div>';
+
   const openai = new OpenAI({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY,
     dangerouslyAllowBrowser: true,
   });
 
-  const response = await openai.images.generate({
-    // model: "dall-e-3", // default dall-e-2
-    prompt: prompt, //required
-    // n: 1, //default 1
-    // size: "1024x1024", //default 1024x1024
-    // style: "vivid", //default vivid (other option: natural)
-    response_format: "b64_json", //default url (image dissappear in an hour)
-  });
-  console.log(response);
-
-  chatHistory.innerHTML = `<img src="data:image/png;base64,${response.data[0].b64_json}" class="" alt="generated image">`;
+  try {
+    const response = await openai.images.generate({
+      // model: "dall-e-3", // default dall-e-2
+      prompt: prompt, //required
+      // n: 1, //default 1
+      // size: "1024x1024", //default 1024x1024
+      // style: "vivid", //default vivid (other option: natural)
+      response_format: "b64_json", //default url (image dissappear in an hour)
+    });
+    console.log(response);
+    chatHistory.innerHTML = `<img src="data:image/png;base64,${response.data[0].b64_json}" class="max-w-full h-auto mx-auto" alt="generated image">`;
+    isLoading = false;
+    
+  } catch (err) {
+    chatHistory.innerHTML =
+      '<div class="text-red-500 text-center py-8">画像の取得に失敗しました</div>';
+    console.error(err);
+  }
 }
 
 // textareaの高さを自動調整 & Enterで送信、Shift+Enterで改行
@@ -113,8 +127,11 @@ if (inputEl && inputEl.tagName === "TEXTAREA") {
     // Shift+Enterはデフォルトで改行
   });
 }
+
 generateImageBtn.addEventListener("click", () => {
   const prompt = inputEl.value.trim();
   if (!prompt) return;
+  if (isLoading) return;
+  isLoading = true;
   generateImage(prompt);
 });
