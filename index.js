@@ -14,7 +14,7 @@ const assistantMessageClass =
 
 // チャット履歴にメッセージを追加する共通関数
 function appendMessage(content, isUser = false) {
-  const messageEl = document.createElement("li")
+  const messageEl = document.createElement("li");
   messageEl.className =
     chatMessageClass + (isUser ? userMessageClass : assistantMessageClass);
   messageEl.textContent = content;
@@ -77,8 +77,11 @@ chatForm.addEventListener("submit", async (e) => {
 
 async function generateImage(prompt) {
   // ローディング表示
-  chatHistory.innerHTML =
-    '<div class="w-full flex justify-center items-center py-8"><span class="animate-pulse text-gray-500">Loading image...</span></div>';
+  const loadingEl = document.createElement("li");
+  loadingEl.className = "w-full flex justify-center items-center py-8";
+  loadingEl.innerHTML = `<span class="animate-pulse text-gray-500">Loading image...</span>`;
+  chatHistory.appendChild(loadingEl);
+  
 
   // まずプロンプトを英語に翻訳
   let translatedPrompt = prompt;
@@ -108,11 +111,18 @@ async function generateImage(prompt) {
       imagePrompt: translatedPrompt,
       type: "image",
     });
-    chatHistory.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto" alt="generated image">`;
+    loadingEl.remove();
+
+    const imgEl = document.createElement("li");
+    imgEl.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto" alt="generated image">`;
+    chatHistory.appendChild(imgEl);
+
+    // chatHistory.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto" alt="generated image">`;
     isLoading = false;
   } catch (err) {
+    loadingEl.remove();
     chatHistory.innerHTML =
-      '<div class="text-red-500 text-center py-8">画像の取得に失敗しました</div>';
+      '<li class="text-red-500 text-center py-8">画像の取得に失敗しました</li>';
     console.error(err);
     isLoading = false;
   }
