@@ -4,7 +4,7 @@ const inputEl = document.getElementById("chat-input");
 const generateImageBtn = document.getElementById("generate-image-btn");
 
 let checkedRadio = null;
-let checkedLang = null; // Corrected variable name
+let checkedLang = null;
 let isLoading = false;
 
 const chatMessageClass = "font-bold py-2 px-4 rounded-b-lg  w-11/12 ";
@@ -114,6 +114,7 @@ async function generateImage(prompt) {
     chatHistory.innerHTML =
       '<div class="text-red-500 text-center py-8">画像の取得に失敗しました</div>';
     console.error(err);
+    isLoading = false;
   }
 }
 
