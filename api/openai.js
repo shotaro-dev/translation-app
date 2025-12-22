@@ -1,7 +1,5 @@
 import { OpenAI } from "openai";
 
-
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -28,8 +26,12 @@ export default async function handler(req, res) {
         .json({ result: response.choices[0].message.content });
     } else if (type === "image") {
       const response = await openai.images.generate({
-        prompt: imagePrompt,
-        response_format: "b64_json",
+        model: "dall-e-3", // default dall-e-2
+        prompt: imagePrompt, //required
+        n: 1, //default 1
+        size: "1024x1024", //default 1024x1024
+        style: "vivid", //default vivid (other option: natural)
+        response_format: "b64_json", //default url(last for a hour)
       });
       return res.status(200).json({ image: response.data[0].b64_json });
     } else {

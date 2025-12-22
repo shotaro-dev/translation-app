@@ -1,13 +1,10 @@
-// import { OpenAI } from "openai";
-// import OpenAI from "https://cdn.jsdelivr.net/npm/openai@4.68.0/+esm";
-
 const chatForm = document.getElementById("chat-form");
 const chatHistory = document.getElementById("chat-history");
 const inputEl = document.getElementById("chat-input");
 const generateImageBtn = document.getElementById("generate-image-btn");
 
 let checkedRadio = null;
-let chelkedLang = null;
+let checkedLang = null; // Corrected variable name
 let isLoading = false;
 
 const chatMessageClass = "font-bold py-2 px-4 rounded-b-lg  w-11/12 ";
@@ -15,34 +12,48 @@ const userMessageClass = "bg-green-400 text-black self-end rounded-tl-lg mr-4";
 const assistantMessageClass =
   "bg-blue-800 text-white self-start rounded-tr-lg ml-2";
 
-const assistantMessageEl = document.createElement("div");
-assistantMessageEl.className = chatMessageClass + assistantMessageClass;
-assistantMessageEl.textContent =
-  "Select the language you want me translate to and type your text and hit send!";
-chatHistory.appendChild(assistantMessageEl);
+// チャット履歴にメッセージを追加する共通関数
+function appendMessage(content, isUser = false) {
+  const messageEl = document.createElement("div");
+  messageEl.className =
+    chatMessageClass + (isUser ? userMessageClass : assistantMessageClass);
+  messageEl.textContent = content;
+  chatHistory.appendChild(messageEl);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+
+// 初期メッセージ
+appendMessage(
+  "Select the language you want me translate to and type your text and hit send!",
+  false
+);
+
+// 共通のAPI呼び出し関数
+async function callApi(bodyObj) {
+  const res = await fetch("/api/openai", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(bodyObj),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "API error");
+  return data;
+}
 
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userMessage = inputEl.value.trim();
   if (!userMessage) return;
 
-  // ユーザーメッセージをチャット履歴に追加
-  const userMessageEl = document.createElement("div");
-
-  userMessageEl.className = chatMessageClass + userMessageClass;
-  userMessageEl.textContent = userMessage;
-  chatHistory.appendChild(userMessageEl);
-  // 自動スクロール
-  chatHistory.scrollTop = chatHistory.scrollHeight;
+  appendMessage(userMessage, true);
   inputEl.value = "";
 
   // 翻訳言語の取得
-  checkedRadio = document.querySelector('input[name="language"]:checked');
+  const checkedRadio = document.querySelector('input[name="language"]:checked');
   if (checkedRadio) {
-    chelkedLang = checkedRadio.value;
+    checkedLang = checkedRadio.value; // Corrected variable name
   }
 
-  // OpenAI APIを呼び出して翻訳を取得（API経由）
   const messages = [
     {
       role: "system",
@@ -51,30 +62,16 @@ chatForm.addEventListener("submit", async (e) => {
     },
     {
       role: "user",
-      content:
-        userMessage +
-        `を${chelkedLang}語に翻訳してください。翻訳された文章のみを出力してください。`,
+      content: `${userMessage}を${checkedLang}語に翻訳してください。翻訳された文章のみを出力してください。`,
     },
   ];
 
   try {
-    const res = await fetch("/api/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages, type: "chat" }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "API error");
-
-    // アシスタントメッセージをチャット履歴に追加
-    const assistantMessageEl = document.createElement("div");
-    assistantMessageEl.className = chatMessageClass + assistantMessageClass;
-    assistantMessageEl.textContent = data.result;
-    chatHistory.appendChild(assistantMessageEl);
-    // 自動スクロール
-    chatHistory.scrollTop = chatHistory.scrollHeight;
+    const data = await callApi({ messages, type: "chat" });
+    appendMessage(data.result, false);
   } catch (err) {
     console.error(err);
+    appendMessage("エラーが発生しました: " + err.message, false);
   }
 });
 
@@ -97,16 +94,9 @@ async function generateImage(prompt) {
         content: prompt,
       },
     ];
-    const res = await fetch("/api/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: translationMessages, type: "chat" }),
-    });
-    const data = await res.json();
-    if (res.ok && data.result) {
+    const data = await callApi({ messages: translationMessages, type: "chat" });
+    if (data.result) {
       translatedPrompt = data.result.trim();
-    } else {
-      translatedPrompt = prompt;
     }
   } catch (err) {
     console.error("翻訳失敗: ", err);
@@ -114,13 +104,10 @@ async function generateImage(prompt) {
   }
 
   try {
-    const res = await fetch("/api/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imagePrompt: translatedPrompt, type: "image" }),
+    const data = await callApi({
+      imagePrompt: translatedPrompt,
+      type: "image",
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "API error");
     chatHistory.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto" alt="generated image">`;
     isLoading = false;
   } catch (err) {
@@ -147,8 +134,7 @@ if (inputEl && inputEl.tagName === "TEXTAREA") {
 
 generateImageBtn.addEventListener("click", () => {
   const prompt = inputEl.value.trim();
-  if (!prompt) return;
-  if (isLoading) return;
+  if (!prompt || isLoading) return;
   isLoading = true;
   generateImage(prompt);
 });
