@@ -6,10 +6,12 @@
     <title>Translation App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="index.js" type="module" defer></script>
+
+    <style></style>
   </head>
-  <body class="min-h-screen flex flex-col items-center">
+  <body class="h-screen flex flex-col items-center">
     <header
-      class="h-1/4 bg-[url('./images/map_generated_in_grok.jpg')] bg-black/80 bg-blend-multiply bg-cover bg-center w-full flex"
+      class="h-1/4 bg-[url('./images/map_generated_in_grok.jpg')] bg-black/80 bg-blend-multiply bg-cover bg-center flex items-center justify-center gap-4 w-full px-4"
     >
       <img
         class="w-32 h-32 object-cover rounded-full"
@@ -17,16 +19,66 @@
         alt="Bird Logo"
       />
       <div class="flex flex-col justify-center">
-        <h1 class="text-emerald-600 font-bold text-3xl">PollyGlot</h1>
-        <p class="text-white">Perfect translations Every Time</p>
+        <h1 class="text-emerald-600 font-bold text-3xl tracking-tighter">PollyGlot</h1>
+        <p class="text-white text-sm">Perfect translations Every Time</p>
       </div>
     </header>
     <main
       class="border-4 border-black rounded-lg p-6 mt-6 w-11/12 flex flex-col gap-6"
     >
+      <section>
+        <form id="chat-form">
+          <div
+            id="chat-history"
+            class="flex flex-col gap-6 max-h-96 overflow-y-auto"
+          ></div>
 
+          <div>
+            <label for="chat-input" class="sr-only"
+              >Enter text to translate</label
+            >
+            <input type="text" id="chat-input" /><button
+              id="send-btn"
+              aria-label="Send"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="2 21 23 12 2 3 6 12 2 21" />
+              </svg>
+            </button>
+            <button id="generate-image-btn" aria-label="Generate Image" type="button">画像生成</button>
+          </div>
+          <div id="languages">
+            <label
+              ><input type="radio" name="language" value="en" checked /> English
+              <span class="">🇺🇸</span></label
+            >
+            <label
+              ><input type="radio" name="language" value="es" /> Spanish
+              <span class="">🇪🇸</span></label
+            >
+            <label
+              ><input type="radio" name="language" value="fr" /> French
+              <span class="">🇫🇷</span></label
+            >
+            <label
+              ><input type="radio" name="language" value="ja" /> Japanese
+              <span class="">🇯🇵</span></label
+            >
+          </div>
+        </form>
+      </section>
 
-      <section class="">
+      <!-- <section class="">
         <form id="translation-form" class="flex flex-col gap-4">
           <label for="input-text">Text to translate 👇</label>
           <textarea
@@ -63,7 +115,7 @@
       <section class="">
         <h2>Translated text:</h2>
         <div id="output-text"></div>
-      </section>
+      </section> -->
     </main>
   </body>
 </html>
