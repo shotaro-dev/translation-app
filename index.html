@@ -11,7 +11,7 @@
   </head>
   <body class="h-screen flex flex-col items-center">
     <header
-      class="h-1/4 bg-[url('./images/map_generated_in_grok.jpg')] bg-black/80 bg-blend-multiply bg-cover bg-center flex items-center justify-center gap-4 w-full px-4"
+      class="min-h-48 bg-[url('./images/map_generated_in_grok.jpg')] bg-black/80 bg-blend-multiply bg-cover bg-center flex items-center justify-center gap-4 w-full px-4"
     >
       <img
         class="w-32 h-32 object-cover rounded-full"
@@ -19,7 +19,9 @@
         alt="Bird Logo"
       />
       <div class="flex flex-col justify-center">
-        <h1 class="text-emerald-600 font-bold text-3xl tracking-tighter">PollyGlot</h1>
+        <h1 class="text-emerald-600 font-bold text-3xl tracking-tighter">
+          PollyGlot
+        </h1>
         <p class="text-white text-sm">Perfect translations Every Time</p>
       </div>
     </header>
@@ -27,40 +29,54 @@
       class="border-4 border-black rounded-lg p-6 m-6 w-11/12 max-w-lg flex flex-col flex-1"
     >
       <section>
-        <form id="chat-form" >
+        <form id="chat-form">
           <div
             id="chat-history"
             class="flex flex-col gap-6 max-h-96 overflow-y-auto mb-8"
           ></div>
 
-          <div class="border-2 rounded-lg border-slate-500 p-2 flex flex-wrap gap-2 items-center">
+          <div
+            class="border-2 rounded-lg border-slate-500 p-2 flex flex-wrap gap-2 items-center"
+          >
             <label for="chat-input" class="sr-only"
               >Enter text to translate</label
             >
-            <textarea type="text" id="chat-input" class="grow resize-none overflow-hidden p-2" rows="1"></textarea>
+            <textarea
+              type="text"
+              id="chat-input"
+              class="grow resize-none overflow-hidden p-2"
+              rows="1"
+            ></textarea>
             <div class="flex justify-between w-full gap-4 mt-2">
-            <button id="generate-image-btn" class=" bg-orange-600 text-white font-bold py-2 px-4 rounded hover:opacity-75 cursor-pointer" aria-label="Generate Image" type="button">Generate Image</button>
-
-            <button
-              id="send-btn"
-              aria-label="Send"
-              class="cursor-pointer hover:opacity-75"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+              <button
+                id="generate-image-btn"
+                class="bg-orange-600 text-white font-bold py-2 px-4 rounded hover:opacity-75 cursor-pointer"
+                aria-label="Generate Image"
+                type="button"
               >
-                <polygon points="2 21 23 12 2 3 6 12 2 21" />
-              </svg>
-            </button>
-             </div>
+                Generate Image
+              </button>
+
+              <button
+                id="send-btn"
+                aria-label="Send"
+                class="cursor-pointer hover:opacity-75"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon points="2 21 23 12 2 3 6 12 2 21" />
+                </svg>
+              </button>
+            </div>
           </div>
           <div id="languages" class="mt-4 flex gap-2 justify-around">
             <label
@@ -82,7 +98,6 @@
           </div>
         </form>
       </section>
-
     </main>
   </body>
 </html>
