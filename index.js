@@ -9,9 +9,9 @@ const generateImageBtn = document.getElementById("generate-image-btn");
 let checkedRadio = null;
 let chelkedLang = null;
 
-const chatMessageClass = "font-bold p-2  rounded-b-lg  w-11/12 ";
-const userMessageClass = "bg-green-400 text-black self-end rounded-tl-lg";
-const assistantMessageClass = "bg-blue-800 text-white self-start rounded-tr-lg";
+const chatMessageClass = "font-bold py-2 px-4 rounded-b-lg  w-11/12 ";
+const userMessageClass = "bg-green-400 text-black self-end rounded-tl-lg mr-4";
+const assistantMessageClass = "bg-blue-800 text-white self-start rounded-tr-lg ml-2";
 
 const assistantMessageEl = document.createElement("div");
 assistantMessageEl.className = chatMessageClass + assistantMessageClass;
