@@ -93,10 +93,37 @@ async function generateImage(prompt) {
     dangerouslyAllowBrowser: true,
   });
 
+  // まずプロンプトを英語に翻訳
+  let translatedPrompt = prompt;
+  try {
+    const translationMessages = [
+      {
+        role: "system",
+        content:
+          "You are a world-class translator. Translate the user's prompt to natural English for image generation. Output only the translated prompt.",
+      },
+      {
+        role: "user",
+        content: prompt,
+      },
+    ];
+    const translationResponse = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: translationMessages,
+      temperature: 0.3,
+      max_tokens: 500,
+    });
+    translatedPrompt = translationResponse.choices[0].message.content.trim();
+  } catch (err) {
+    console.error("翻訳失敗: ", err);
+    // 翻訳失敗時は元のプロンプトを使う
+    translatedPrompt = prompt;
+  }
+
   try {
     const response = await openai.images.generate({
       // model: "dall-e-3", // default dall-e-2
-      prompt: prompt, //required
+      prompt: translatedPrompt, // 英語化したプロンプト
       // n: 1, //default 1
       // size: "1024x1024", //default 1024x1024
       // style: "vivid", //default vivid (other option: natural)
@@ -105,7 +132,6 @@ async function generateImage(prompt) {
     console.log(response);
     chatHistory.innerHTML = `<img src="data:image/png;base64,${response.data[0].b64_json}" class="max-w-full h-auto mx-auto" alt="generated image">`;
     isLoading = false;
-    
   } catch (err) {
     chatHistory.innerHTML =
       '<div class="text-red-500 text-center py-8">画像の取得に失敗しました</div>';
