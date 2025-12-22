@@ -1,4 +1,4 @@
-import { OpenAI } from "openai";
+// import { OpenAI } from "openai";
 // import OpenAI from "https://cdn.jsdelivr.net/npm/openai@4.68.0/+esm";
 
 const chatForm = document.getElementById("chat-form");
@@ -42,12 +42,7 @@ chatForm.addEventListener("submit", async (e) => {
     chelkedLang = checkedRadio.value;
   }
 
-  // OpenAI APIを呼び出して翻訳を取得
-  const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-  });
-
+  // OpenAI APIを呼び出して翻訳を取得（API経由）
   const messages = [
     {
       role: "system",
@@ -63,17 +58,18 @@ chatForm.addEventListener("submit", async (e) => {
   ];
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: messages,
-      temperature: 0.3,
-      max_tokens: 500,
+    const res = await fetch("/api/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages, type: "chat" }),
     });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "API error");
 
     // アシスタントメッセージをチャット履歴に追加
     const assistantMessageEl = document.createElement("div");
     assistantMessageEl.className = chatMessageClass + assistantMessageClass;
-    assistantMessageEl.textContent = response.choices[0].message.content;
+    assistantMessageEl.textContent = data.result;
     chatHistory.appendChild(assistantMessageEl);
     // 自動スクロール
     chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -82,16 +78,10 @@ chatForm.addEventListener("submit", async (e) => {
   }
 });
 
-
 async function generateImage(prompt) {
   // ローディング表示
   chatHistory.innerHTML =
     '<div class="w-full flex justify-center items-center py-8"><span class="animate-pulse text-gray-500">Loading image...</span></div>';
-
-  const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-  });
 
   // まずプロンプトを英語に翻訳
   let translatedPrompt = prompt;
@@ -107,30 +97,31 @@ async function generateImage(prompt) {
         content: prompt,
       },
     ];
-    const translationResponse = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: translationMessages,
-      temperature: 0.3,
-      max_tokens: 500,
+    const res = await fetch("/api/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: translationMessages, type: "chat" }),
     });
-    translatedPrompt = translationResponse.choices[0].message.content.trim();
+    const data = await res.json();
+    if (res.ok && data.result) {
+      translatedPrompt = data.result.trim();
+    } else {
+      translatedPrompt = prompt;
+    }
   } catch (err) {
     console.error("翻訳失敗: ", err);
-    // 翻訳失敗時は元のプロンプトを使う
     translatedPrompt = prompt;
   }
 
   try {
-    const response = await openai.images.generate({
-      // model: "dall-e-3", // default dall-e-2
-      prompt: translatedPrompt, // 英語化したプロンプト
-      // n: 1, //default 1
-      // size: "1024x1024", //default 1024x1024
-      // style: "vivid", //default vivid (other option: natural)
-      response_format: "b64_json", //default url (image dissappear in an hour)
+    const res = await fetch("/api/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imagePrompt: translatedPrompt, type: "image" }),
     });
-    console.log(response);
-    chatHistory.innerHTML = `<img src="data:image/png;base64,${response.data[0].b64_json}" class="max-w-full h-auto mx-auto" alt="generated image">`;
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "API error");
+    chatHistory.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto" alt="generated image">`;
     isLoading = false;
   } catch (err) {
     chatHistory.innerHTML =
