@@ -14,7 +14,7 @@ const assistantMessageClass =
 
 // チャット履歴にメッセージを追加する共通関数
 function appendMessage(content, isUser = false) {
-  const messageEl = document.createElement("div");
+  const messageEl = document.createElement("li")
   messageEl.className =
     chatMessageClass + (isUser ? userMessageClass : assistantMessageClass);
   messageEl.textContent = content;
@@ -42,7 +42,7 @@ async function callApi(bodyObj) {
 
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const userMessage = inputEl.value.trim();
+  const userMessage = sanitizeInput(inputEl.value.trim());
   if (!userMessage) return;
 
   appendMessage(userMessage, true);
@@ -134,8 +134,14 @@ if (inputEl && inputEl.tagName === "TEXTAREA") {
 }
 
 generateImageBtn.addEventListener("click", () => {
-  const prompt = inputEl.value.trim();
+  const prompt = sanitizeInput(inputEl.value.trim());
   if (!prompt || isLoading) return;
   isLoading = true;
   generateImage(prompt);
 });
+
+function sanitizeInput(input) {
+  const div = document.createElement("div");
+  div.textContent = input;
+  return div.innerHTML;
+}
