@@ -24,22 +24,27 @@
       </div>
     </header>
     <main
-      class="border-4 border-black rounded-lg p-6 mt-6 w-11/12 flex flex-col gap-6"
+      class="border-4 border-black rounded-lg p-6 m-6 w-11/12 max-w-lg flex flex-col flex-1"
     >
       <section>
-        <form id="chat-form">
+        <form id="chat-form" >
           <div
             id="chat-history"
-            class="flex flex-col gap-6 max-h-96 overflow-y-auto"
+            class="flex flex-col gap-6 max-h-96 overflow-y-auto mb-8 pr-4 pl-2"
           ></div>
 
-          <div>
+          <div class="border-2 rounded-lg border-slate-500 p-2 flex flex-wrap gap-2 items-center">
             <label for="chat-input" class="sr-only"
               >Enter text to translate</label
             >
-            <input type="text" id="chat-input" /><button
+            <textarea type="text" id="chat-input" class="grow resize-none overflow-hidden p-2" rows="1"></textarea>
+            <div class="flex justify-between w-full gap-4 mt-2">
+            <button id="generate-image-btn" class=" bg-orange-600 text-white font-bold py-2 px-4 rounded hover:opacity-75 cursor-pointer" aria-label="Generate Image" type="button">Generate Image</button>
+
+            <button
               id="send-btn"
               aria-label="Send"
+              class="cursor-pointer hover:opacity-75"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -55,67 +60,29 @@
                 <polygon points="2 21 23 12 2 3 6 12 2 21" />
               </svg>
             </button>
-            <button id="generate-image-btn" aria-label="Generate Image" type="button">画像生成</button>
+             </div>
           </div>
-          <div id="languages">
+          <div id="languages" class="mt-4 flex gap-2 justify-around">
             <label
-              ><input type="radio" name="language" value="en" checked /> English
+              ><input type="radio" name="language" value="en" checked /> En
               <span class="">🇺🇸</span></label
             >
             <label
-              ><input type="radio" name="language" value="es" /> Spanish
+              ><input type="radio" name="language" value="es" /> Es
               <span class="">🇪🇸</span></label
             >
             <label
-              ><input type="radio" name="language" value="fr" /> French
+              ><input type="radio" name="language" value="fr" /> Fr
               <span class="">🇫🇷</span></label
             >
             <label
-              ><input type="radio" name="language" value="ja" /> Japanese
+              ><input type="radio" name="language" value="ja" /> Ja
               <span class="">🇯🇵</span></label
             >
           </div>
         </form>
       </section>
 
-      <!-- <section class="">
-        <form id="translation-form" class="flex flex-col gap-4">
-          <label for="input-text">Text to translate 👇</label>
-          <textarea
-            id="input-text"
-            rows="6"
-            placeholder="Type your text here..."
-          ></textarea>
-          <label for="language-select">Select language 👇</label>
-          <div id="language-select" class="flex flex-col gap-2">
-            <label
-              ><input type="radio" name="language" value="en" checked /> English
-              <span class="">🇺🇸</span></label
-            >
-            <label
-              ><input type="radio" name="language" value="es" /> Spanish
-              <span class="">🇪🇸</span></label
-            >
-            <label
-              ><input type="radio" name="language" value="fr" /> French
-              <span class="">🇫🇷</span></label
-            >
-            <label
-              ><input type="radio" name="language" value="ja" /> Japanese
-              <span class="">🇯🇵</span></label
-            >
-          </div>
-          <button
-            class="bg-blue-800 text-white font-bold py-2 px-4 rounded hover:opacity-75"
-          >
-            Translate
-          </button>
-        </form>
-      </section>
-      <section class="">
-        <h2>Translated text:</h2>
-        <div id="output-text"></div>
-      </section> -->
     </main>
   </body>
 </html>

@@ -1,17 +1,5 @@
-//
 import { OpenAI } from "openai";
-import { GraderModels } from "openai/resources/graders/grader-models.mjs";
 // import OpenAI from "https://cdn.jsdelivr.net/npm/openai@4.68.0/+esm";
-
-// 仕様
-// チャット風に表示する
-// 翻訳履歴を保存する
-// userは右より
-// assistantは左より
-// 送信ボタンを紙飛行機のアイコンにする
-// Enterキーで送信できるようにする
-//
-// 一番下で翻訳する言語を選択する
 
 const chatForm = document.getElementById("chat-form");
 const chatHistory = document.getElementById("chat-history");
@@ -111,6 +99,20 @@ async function generateImage(prompt) {
   chatHistory.innerHTML = `<img src="data:image/png;base64,${response.data[0].b64_json}" class="" alt="generated image">`;
 }
 
+// textareaの高さを自動調整 & Enterで送信、Shift+Enterで改行
+if (inputEl && inputEl.tagName === "TEXTAREA") {
+  inputEl.addEventListener("input", function () {
+    this.style.height = "auto";
+    this.style.height = this.scrollHeight + "px";
+  });
+  inputEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      chatForm.requestSubmit();
+    }
+    // Shift+Enterはデフォルトで改行
+  });
+}
 generateImageBtn.addEventListener("click", () => {
   const prompt = inputEl.value.trim();
   if (!prompt) return;
