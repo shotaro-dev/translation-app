@@ -11,7 +11,6 @@ This project is based on [Scrimba](https://scrimba.com/) solo project.
 
 ![App Screenshot](images/translation-app-Screenshot.png)
 
-
 ## How this project was built
 
 Initially, with AI(copilot) tab proposal assistance, I drafted the CSS and HTML.
@@ -128,3 +127,6 @@ Every line was **reviewed, tested, and either kept with confidence or rewritten/
 
 ---
 
+## License
+
+Made with ❤️ by [@shotaro-dev](https://github.com/shotaro-dev) • [MIT Licensed](LICENSE)

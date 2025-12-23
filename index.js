@@ -8,7 +8,7 @@ let checkedRadio = null;
 let checkedLang = null;
 let isLoading = false;
 
-const chatMessageClass = "font-bold py-2 px-4 rounded-b-lg  w-11/12 ";
+const chatMessageClass = "font-bold py-2 px-4 rounded-b-lg  w-3/4 ";
 const userMessageClass = "bg-green-400 text-black self-end rounded-tl-lg mr-4";
 const assistantMessageClass =
   "bg-blue-800 text-white self-start rounded-tr-lg ml-2";
