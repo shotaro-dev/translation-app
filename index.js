@@ -81,6 +81,8 @@ async function generateImage(prompt) {
   loadingEl.className = "w-full flex justify-center items-center py-8";
   loadingEl.innerHTML = `<span class="animate-pulse text-gray-500">Loading image...</span>`;
   chatHistory.appendChild(loadingEl);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+
   
 
   // まずプロンプトを英語に翻訳
@@ -116,13 +118,18 @@ async function generateImage(prompt) {
     const imgEl = document.createElement("li");
     imgEl.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto" alt="generated image">`;
     chatHistory.appendChild(imgEl);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
 
     // chatHistory.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto" alt="generated image">`;
     isLoading = false;
   } catch (err) {
     loadingEl.remove();
-    chatHistory.innerHTML =
-      '<li class="text-red-500 text-center py-8">画像の取得に失敗しました</li>';
+    const errorEl = document.createElement("li");
+    errorEl.className = "text-red-500 text-center py-8";
+    errorEl.textContent = "画像の取得に失敗しました";
+    chatHistory.appendChild(errorEl);
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+
     console.error(err);
     isLoading = false;
   }
