@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Translation App</title>
-    <meta name="description" content="A simple translation app that lets you translate text and generate images using AI. Built with vanilla JS and Tailwind CSS.">
+    <meta
+      name="description"
+      content="A simple translation app that lets you translate text and generate images using AI. Built with vanilla JS and Tailwind CSS."
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="index.js" type="module" defer></script>
   </head>
@@ -17,14 +20,14 @@
         src="./images/bird_generated_in_grok.jpg"
         alt="Colorfull parrot"
       />
-      <div class="flex flex-col justify-center">
-        <h1 class="text-emerald-600 font-bold text-3xl tracking-tighter">
+      <div class="flex flex-col justify-center ">
+        <h1 class="text-emerald-500 font-bold text-3xl tracking-tighter ">
           PollyGlot
         </h1>
         <p class="text-white text-sm">Perfect translations Every Time</p>
       </div>
       <a
-        href="https://github.com/shotaro-dev"
+        href="https://github.com/shotaro-dev/translation-app"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="GitHub Repository"
@@ -64,7 +67,6 @@
             >Enter text to translate</label
           >
           <textarea
-            type="text"
             id="chat-input"
             class="grow resize-none overflow-hidden p-2"
             rows="1"
@@ -82,7 +84,7 @@
             <button
               id="send-btn"
               aria-label="Send"
-              class="cursor-pointer hover:opacity-75 active:scale-95 "
+              class="cursor-pointer hover:opacity-75 active:scale-95"
               type="submit"
             >
               <svg
@@ -136,7 +138,7 @@
       </form>
     </main>
     <footer class="text-center p-4 text-gray-500 text-sm">
-      &copy; 2025 PollyGlot. All rights reserved.
+      &copy; 2025 PollyGlot. Released under the MIT License.
     </footer>
   </body>
 </html>
