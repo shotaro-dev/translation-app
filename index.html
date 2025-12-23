@@ -4,10 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Translation App</title>
+    <meta name="description" content="A simple translation app that lets you translate text and generate images using AI. Built with vanilla JS and Tailwind CSS.">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="index.js" type="module" defer></script>
-
-    <style></style>
   </head>
   <body class="h-screen flex flex-col items-center">
     <header
@@ -47,95 +46,94 @@
       </a>
     </header>
     <main
-      class="border-4 border-black rounded-lg p-6 mt-6 w-11/12 max-w-lg flex flex-col flex-1"
+      class="border-4 border-black rounded-lg p-6 mt-6 w-11/12 max-w-lg flex flex-col flex-1 items-center"
     >
-        <h2 id="form-title" class="sr-only">Translation Form</h2>
-         <ul
-            id="chat-history"
-            class="flex flex-col gap-6 max-h-96 overflow-y-auto mb-8"
-            aria-live="polite"
-            aria-relevant="additions text"
-            aria-label="Chat History"
-          ></ul>
-        <form id="chat-form" aria-label="Translation Form" autocomplete="off">
-        
-          <div
-            class="border-2 rounded-lg border-slate-500 p-2 flex flex-wrap gap-2 items-center"
+      <h2 id="form-title" class="font-bold text-3xl mb-4">Try Translate</h2>
+      <ul
+        id="chat-history"
+        class="flex flex-col gap-6 max-h-96 overflow-y-auto mb-8 w-full"
+        aria-live="polite"
+        aria-relevant="additions text"
+        aria-label="Chat History"
+      ></ul>
+      <form id="chat-form" aria-label="Translation Form" autocomplete="off">
+        <div
+          class="border-2 rounded-lg border-slate-500 p-2 flex flex-wrap gap-2 items-center"
+        >
+          <label for="chat-input" class="sr-only"
+            >Enter text to translate</label
           >
-            <label for="chat-input" class="sr-only"
-              >Enter text to translate</label
+          <textarea
+            type="text"
+            id="chat-input"
+            class="grow resize-none overflow-hidden p-2"
+            rows="1"
+          ></textarea>
+          <div class="flex justify-between w-full gap-4 mt-2">
+            <button
+              id="generate-image-btn"
+              class="bg-orange-600 text-white font-bold py-2 px-4 rounded hover:opacity-75 cursor-pointer active:scale-95"
+              aria-label="Generate Image"
+              type="button"
             >
-            <textarea
-              type="text"
-              id="chat-input"
-              class="grow resize-none overflow-hidden p-2"
-              rows="1"
-            ></textarea>
-            <div class="flex justify-between w-full gap-4 mt-2">
-              <button
-                id="generate-image-btn"
-                class="bg-orange-600 text-white font-bold py-2 px-4 rounded hover:opacity-75 cursor-pointer active:scale-95"
-                aria-label="Generate Image"
-                type="button"
-              >
-                Generate Image
-              </button>
+              Generate Image
+            </button>
 
-              <button
-                id="send-btn"
-                aria-label="Send"
-                class="cursor-pointer hover:opacity-75 active:scale-95"
-                type="submit"
+            <button
+              id="send-btn"
+              aria-label="Send"
+              class="cursor-pointer hover:opacity-75 active:scale-95 "
+              type="submit"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                focusable="false"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                  focusable="false"
-                >
-                  <polygon points="2 21 23 12 2 3 6 12 2 21" />
-                </svg>
-              </button>
-            </div>
+                <polygon points="2 21 23 12 2 3 6 12 2 21" />
+              </svg>
+            </button>
           </div>
-          <fieldset
-            aria-labelledby="lang-legend"
-            class="mt-4 flex gap-2 justify-around"
+        </div>
+        <fieldset
+          aria-labelledby="lang-legend"
+          class="mt-4 flex gap-2 justify-around"
+        >
+          <legend id="lang-legend" class="font-bold text-lg mb-2">
+            Translation Language
+          </legend>
+          <label for="lang-en"
+            ><input
+              id="lang-en"
+              type="radio"
+              name="language"
+              value="en"
+              checked
+            />
+            En <span aria-label="English">🇺🇸</span></label
           >
-            <legend id="lang-legend" class="sr-only">
-              Translation Language
-            </legend>
-            <label for="lang-en"
-              ><input
-                id="lang-en"
-                type="radio"
-                name="language"
-                value="en"
-                checked
-              />
-              En <span aria-label="English">🇺🇸</span></label
-            >
-            <label for="lang-es"
-              ><input id="lang-es" type="radio" name="language" value="es" /> Es
-              <span aria-label="Spanish">🇪🇸</span></label
-            >
-            <label for="lang-fr"
-              ><input id="lang-fr" type="radio" name="language" value="fr" /> Fr
-              <span aria-label="French">🇫🇷</span></label
-            >
-            <label for="lang-ja"
-              ><input id="lang-ja" type="radio" name="language" value="ja" /> Ja
-              <span aria-label="Japanese">🇯🇵</span></label
-            >
-          </fieldset>
-        </form>
+          <label for="lang-es"
+            ><input id="lang-es" type="radio" name="language" value="es" /> Es
+            <span aria-label="Spanish">🇪🇸</span></label
+          >
+          <label for="lang-fr"
+            ><input id="lang-fr" type="radio" name="language" value="fr" /> Fr
+            <span aria-label="French">🇫🇷</span></label
+          >
+          <label for="lang-ja"
+            ><input id="lang-ja" type="radio" name="language" value="ja" /> Ja
+            <span aria-label="Japanese">🇯🇵</span></label
+          >
+        </fieldset>
+      </form>
     </main>
     <footer class="text-center p-4 text-gray-500 text-sm">
       &copy; 2025 PollyGlot. All rights reserved.

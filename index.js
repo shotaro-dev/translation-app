@@ -2,6 +2,7 @@ const chatForm = document.getElementById("chat-form");
 const chatHistory = document.getElementById("chat-history");
 const inputEl = document.getElementById("chat-input");
 const generateImageBtn = document.getElementById("generate-image-btn");
+const formTitle = document.getElementById("form-title");
 
 let checkedRadio = null;
 let checkedLang = null;
@@ -12,80 +13,76 @@ const userMessageClass = "bg-green-400 text-black self-end rounded-tl-lg mr-4";
 const assistantMessageClass =
   "bg-blue-800 text-white self-start rounded-tr-lg ml-2";
 
+// Common function to add a message to the chat history
+function appendMessage(content, isUser = false) {
+  const messageEl = document.createElement("li");
+  messageEl.className =
+    chatMessageClass + (isUser ? userMessageClass : assistantMessageClass);
+  messageEl.textContent = content;
+  chatHistory.appendChild(messageEl);
+  chatHistory.scrollTop = chatHistory.scrollHeight;
+}
 
-  // Common function to add a message to the chat history
-  function appendMessage(content, isUser = false) {
-    const messageEl = document.createElement("li");
-    messageEl.className =
-      chatMessageClass + (isUser ? userMessageClass : assistantMessageClass);
-    messageEl.textContent = content;
-    chatHistory.appendChild(messageEl);
-    chatHistory.scrollTop = chatHistory.scrollHeight;
-  }
+// Show form title initially
+if (formTitle) formTitle.hidden = false;
 
-  // Initial message
-  appendMessage(
-    "Select the language you want me to translate to, type your text, and hit send!",
-    false
-  );
-
-  // Common API call function
-  async function callApi(bodyObj) {
-    const res = await fetch("/api/openai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(bodyObj),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "API error");
-    return data;
-  }
+// Common API call function
+async function callApi(bodyObj) {
+  const res = await fetch("/api/openai", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(bodyObj),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "API error");
+  return data;
+}
 
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (formTitle) formTitle.hidden = true;
   const userMessage = sanitizeInput(inputEl.value.trim());
   if (!userMessage) return;
 
   appendMessage(userMessage, true);
   inputEl.value = "";
 
-    // Get the selected translation language
-    const checkedRadio = document.querySelector('input[name="language"]:checked');
-    if (checkedRadio) {
-      checkedLang = checkedRadio.value; 
-    }
+  // Get the selected translation language
+  const checkedRadio = document.querySelector('input[name="language"]:checked');
+  if (checkedRadio) {
+    checkedLang = checkedRadio.value;
+  }
 
-    const messages = [
-      {
-        role: "system",
-        content:
-          "You are the world's best translator who can handle all languages. Please accurately translate the text provided by the user.",
-      },
-      {
-        role: "user",
-        content: `Please translate '${userMessage}' into ${checkedLang}. Output only the translated text.
+  const messages = [
+    {
+      role: "system",
+      content:
+        "You are the world's best translator who can handle all languages. Please accurately translate the text provided by the user.",
+    },
+    {
+      role: "user",
+      content: `Please translate '${userMessage}' into ${checkedLang}. Output only the translated text.
         `,
-      },
-    ];
+    },
+  ];
 
-    try {
-      const data = await callApi({ messages, type: "chat" });
-      appendMessage(data.result, false);
-    } catch (err) {
-      console.error(err);
-      appendMessage("An error occurred: " + err.message, false);
-    }
-  });
+  try {
+    const data = await callApi({ messages, type: "chat" });
+    appendMessage(data.result, false);
+  } catch (err) {
+    console.error(err);
+    appendMessage("An error occurred: " + err.message, false);
+  }
+});
 
 async function generateImage(prompt) {
+  if (formTitle) formTitle.hidden = true;
   // loading indicator
   const loadingEl = document.createElement("li");
   loadingEl.className = "w-full flex justify-center items-center py-8";
   loadingEl.innerHTML = `<span class="animate-pulse text-gray-500">Loading image...</span>`;
   chatHistory.appendChild(loadingEl);
   chatHistory.scrollTop = chatHistory.scrollHeight;
-
-  
 
   // First, translate the prompt to English
   let translatedPrompt = prompt;
@@ -118,7 +115,7 @@ async function generateImage(prompt) {
     loadingEl.remove();
 
     const imgEl = document.createElement("li");
-    imgEl.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto" alt="generated image">`;
+    imgEl.innerHTML = `<img src="data:image/png;base64,${data.image}" class="max-w-full h-auto mx-auto pr-1" alt="generated image">`;
     chatHistory.appendChild(imgEl);
     chatHistory.scrollTop = chatHistory.scrollHeight;
     isLoading = false;
