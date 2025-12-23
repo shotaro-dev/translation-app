@@ -108,7 +108,11 @@ Every line was **reviewed, tested, and either kept with confidence or rewritten/
 
 3. **Call the API directly from the frontend**
 
-   - Example: `fetch('https://api.openai.com/v1/...', { headers: { 'Authorization': 'Bearer ' + import.meta.env.VITE_OPENAI_API_KEY } })`
+   - Example: `import { OpenAI } from "openai";
+const openai = new OpenAI({
+  dangerouslyAllowBrowser: true,
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY
+});`
    - Implement API requests directly in `index.js`, etc.
 
 4. **Start the Vite dev server**
