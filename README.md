@@ -15,7 +15,7 @@ This project is based on [Scrimba](https://scrimba.com/) solo project.
 
 - Trying to implement everything server-side with hidden APIs from the start was overwhelming—there was too much to remember, and even asking AI didn't help me retain it. It was also hard to output and validate like a browser on the server side.
 - After struggling for 2-3 days, I realized it wasn't working. So I used Vite to enable API key usage on the browser side for easier validation and built that first. Then I instructed Copilot to make it serverless. That made the code much easier to validate too.
-- I initially tried using Node.js, but I'd learned it three years ago on FreeCodeCamp and barely remembered anything. It made code reviews too burdensome, so I abandoned it. Vercel Serverless required less learning and fit the current situation better.
+- I initially tried using Node.js, but I'd learned it previously on FreeCodeCamp and barely remembered anything. It made code reviews too burdensome, so I abandoned it. Vercel Serverless required less learning and fit the current situation better.
 
 ## Tips
 
