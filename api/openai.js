@@ -14,7 +14,7 @@ const redis =
     : null;
 
 // Check and increment usage count
-async function checkAndIncrement(key, maxLimit) {
+async function checkAndIncrement(key, maxLimit, clientIp) {
   // If Redis is not configured, allow all requests (for local dev)
   if (!redis) {
     console.warn("Redis not configured, rate limit disabled");
@@ -22,16 +22,6 @@ async function checkAndIncrement(key, maxLimit) {
   }
 
   try {
-    // simple IP-based implementation
-    const clientIp =
-      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
-      req.headers["x-real-ip"] ||
-      "unknown";
-
-    // デバッグ用: IPアドレスをログに出力
-    console.log("Client IP:", clientIp);
-    console.log("All headers:", JSON.stringify(req.headers, null, 2));
-
     const today = new Date().toDateString();
     const redisKey = `${key}:${today}:${clientIp}`;
 
@@ -64,7 +54,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-
+  
   const { messages, imagePrompt, type } = req.body;
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -73,10 +63,19 @@ export default async function handler(req, res) {
 
   const openai = new OpenAI({ apiKey });
 
+  const clientIp =
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      req.headers["x-real-ip"] ||
+      "unknown";
+
+    // デバッグ用: IPアドレスをログに出力
+    console.log("Client IP:", clientIp);
+    console.log("All headers:", JSON.stringify(req.headers, null, 2));
+
   try {
     if (type === "chat") {
       // Check rate limit
-      const limitCheck = await checkAndIncrement("chat", MAX_DAILY_CHAT);
+      const limitCheck = await checkAndIncrement("chat", MAX_DAILY_CHAT,clientIp);
       if (!limitCheck.allowed) {
         return res.status(429).json({
           error: `Daily chat limit reached (${MAX_DAILY_CHAT} requests)`,
@@ -96,7 +95,7 @@ export default async function handler(req, res) {
         .json({ result: response.choices[0].message.content });
     } else if (type === "image") {
       // Check rate limit
-      const limitCheck = await checkAndIncrement("image", MAX_DAILY_IMAGES);
+      const limitCheck = await checkAndIncrement("image", MAX_DAILY_IMAGES, clientIp);
       if (!limitCheck.allowed) {
         return res.status(429).json({
           error: `Daily image limit reached (${MAX_DAILY_IMAGES} requests)`,
