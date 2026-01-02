@@ -13,7 +13,6 @@ const redis =
       })
     : null;
 
-    
 // Check and increment usage count
 async function checkAndIncrement(key, maxLimit) {
   // If Redis is not configured, allow all requests (for local dev)
@@ -23,10 +22,16 @@ async function checkAndIncrement(key, maxLimit) {
   }
 
   try {
-      // simple IP-based implementation
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() 
-    || req.headers['x-real-ip'] 
-    || 'unknown';
+    // simple IP-based implementation
+    const clientIp =
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      req.headers["x-real-ip"] ||
+      "unknown";
+
+    // デバッグ用: IPアドレスをログに出力
+    console.log("Client IP:", clientIp);
+    console.log("All headers:", JSON.stringify(req.headers, null, 2));
+
     const today = new Date().toDateString();
     const redisKey = `${key}:${today}:${clientIp}`;
 
@@ -40,7 +45,7 @@ async function checkAndIncrement(key, maxLimit) {
 
     // Check if limit reached
     if (count >= maxLimit) {
-      return { allowed: false};
+      return { allowed: false };
     }
 
     // Increment count and set expiration (24 hours)
@@ -56,8 +61,6 @@ async function checkAndIncrement(key, maxLimit) {
 }
 
 export default async function handler(req, res) {
-
-
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
