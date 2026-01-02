@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   try {
     if (type === "chat") {
       const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages,
         temperature: 0.3,
         max_tokens: 500,
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         .json({ result: response.choices[0].message.content });
     } else if (type === "image") {
       const response = await openai.images.generate({
-        model: "dall-e-3", // default dall-e-2
+        model: "gpt-image-1-mini", 
         prompt: imagePrompt, //required
         n: 1, //default 1
         size: "1024x1024", //default 1024x1024
