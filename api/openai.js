@@ -1,8 +1,8 @@
 import { OpenAI } from "openai";
 import { Redis } from "@upstash/redis";
 
-const MAX_DAILY_CHAT = 2; // 適切な値に変更
-const MAX_DAILY_IMAGES = 1; // 適切な値に変更
+const MAX_DAILY_CHAT = 50; // optimize for cost
+const MAX_DAILY_IMAGES = 10; // optimize for cost
 
 // Initialize Redis client (only if environment variables are set)
 const redis =
@@ -35,7 +35,7 @@ async function checkAndIncrement(key, maxLimit) {
 
     // Check if limit reached
     if (count >= maxLimit) {
-      return { allowed: false, count };
+      return { allowed: false};
     }
 
     // Increment count and set expiration (24 hours)
