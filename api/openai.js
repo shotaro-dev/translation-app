@@ -63,8 +63,8 @@ async function checkAndIncrement(key, maxLimit, clientIp, globalMaxLimit) {
     return { allowed: true, count: newCount, globalCount: newGlobalCount };
   } catch (err) {
     console.error("Redis error:", err);
-    // Fail open - allow request if Redis fails (better UX)
-    return { allowed: true, count: 0, globalCount: 0 };
+    // Fail closed - reject request if Redis fails (safer for cost control)
+    return { allowed: false, reason: "rate_limit_service_unavailable" };
   }
 }
 
@@ -100,10 +100,15 @@ export default async function handler(req, res) {
         MAX_GLOBAL_DAILY_CHAT
       );
       if (!limitCheck.allowed) {
-        const errorMsg =
-          limitCheck.reason === "global_limit"
-            ? `Global daily chat limit reached (${MAX_GLOBAL_DAILY_CHAT} requests across all IPs)`
-            : `Daily chat limit reached for this IP (${MAX_DAILY_CHAT} requests)`;
+        let errorMsg;
+        if (limitCheck.reason === "global_limit") {
+          errorMsg = `Global daily chat limit reached (${MAX_GLOBAL_DAILY_CHAT} requests across all IPs)`;
+        } else if (limitCheck.reason === "rate_limit_service_unavailable") {
+          errorMsg =
+            "Rate limit service temporarily unavailable. Please try again later.";
+        } else {
+          errorMsg = `Daily chat limit reached for this IP (${MAX_DAILY_CHAT} requests)`;
+        }
         return res.status(429).json({ error: errorMsg });
       }
 
@@ -129,10 +134,15 @@ export default async function handler(req, res) {
         MAX_GLOBAL_DAILY_IMAGES
       );
       if (!limitCheck.allowed) {
-        const errorMsg =
-          limitCheck.reason === "global_limit"
-            ? `Global daily image limit reached (${MAX_GLOBAL_DAILY_IMAGES} requests across all IPs)`
-            : `Daily image limit reached for this IP (${MAX_DAILY_IMAGES} requests)`;
+        let errorMsg;
+        if (limitCheck.reason === "global_limit") {
+          errorMsg = `Global daily image limit reached (${MAX_GLOBAL_DAILY_IMAGES} requests across all IPs)`;
+        } else if (limitCheck.reason === "rate_limit_service_unavailable") {
+          errorMsg =
+            "Rate limit service temporarily unavailable. Please try again later.";
+        } else {
+          errorMsg = `Daily image limit reached for this IP (${MAX_DAILY_IMAGES} requests)`;
+        }
         return res.status(429).json({ error: errorMsg });
       }
 
